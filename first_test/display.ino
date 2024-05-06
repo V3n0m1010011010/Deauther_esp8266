@@ -10,16 +10,23 @@ void logoShow(){
   display.display();
 }
 void pointerF(){
-  display.drawLine(0, 2 + 10 * pointer, 0, 7 + 10 * pointer, SH110X_WHITE);
-}
-void selector(){
+    display.drawLine(0, 3 + 10 * pointer, 0, 8 + 10 * pointer, SH110X_WHITE);
 }
 void displayAll(){
   display.clearDisplay();
   for (int i = 0; i < 6; i++) {
     pointerF();
-    display.setCursor(10, first_item_pos + (10 * i) + 2);
-    display.println(SSIDS[i + shift]);
+    if(i == pointer){
+      display.setCursor(18, first_item_pos + (10 * i) + 2);
+      if(isSelected){
+        display.setTextColor(SH110X_BLACK, SH110X_WHITE);
+      }
+      display.println(SSIDS[i + shift].substring(0,16));
+    }else{
+      display.setCursor(13, first_item_pos + (10 * i) + 2);
+      display.setTextColor(SH110X_WHITE);
+      display.println(SSIDS[i + shift].substring(0,16));
+    }
   }
   display.display();
 }

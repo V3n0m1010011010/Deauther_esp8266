@@ -21,6 +21,7 @@ void controls(){
     if(results.value == 16753245){
       id = shift + pointer;
       isSelected = true;
+      displayAll();
       createPacket(WiFi.BSSID(id));
       wifi_set_channel(WiFi.channel(id));
       while(isSelected){

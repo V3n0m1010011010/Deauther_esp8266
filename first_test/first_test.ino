@@ -8,7 +8,7 @@
 #include <user_config.h> 
 
 #define i2c_Address 0x3c 
-#define SCREEN_WIDTH 130
+#define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 
