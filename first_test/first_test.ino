@@ -4,12 +4,13 @@
 #include <Adafruit_SH110X.h>
 #include <IRremoteESP8266.h>
 #include <IRrecv.h>
-#include <IRutils.h> 
+#include <IRutils.h>
 #include <user_config.h>
 
+int n;
 String SSIDS[30];
 
-void setup()   {
+void setup() {
   delay(250);
   initAll();
   delay(200);
@@ -17,7 +18,9 @@ void setup()   {
   scan();
 }
 void loop() {
-  controls();
-  delay(100);
+  if (n > 0) {
+    controls();
+    delay(100);
+  }
   displayAll();
 }
