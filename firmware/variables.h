@@ -14,7 +14,6 @@ decode_results results;
 
 Menu* activem;
 Menu* mainm;
-Menu* attackm;
 
 Menu* scanm;
 Menu* apScanm;
@@ -24,6 +23,10 @@ Menu* selectm;
 Menu* selectAp;
 Menu* selectSt;
 
+Menu* attackm;
+Menu* deauthm;
+
+bool deauthing = false;
 
 struct AccessPoint {
   String ssid;

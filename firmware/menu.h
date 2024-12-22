@@ -40,5 +40,13 @@ public:
 
   void setlist(std::vector<bool> list);
   std::vector<bool> getlist();
+
+  void setTitle(std::string t);
+  std::string getTitle();
+
+  void setSection(std::string t, int i);
+  std::string getSection(int i);
+
+  void setScroll(bool scroll);
 };
 #endif

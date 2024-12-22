@@ -5,7 +5,6 @@
 #include <IRrecv.h>
 #include <IRutils.h>
 #include <Wire.h>
-#include <user_config.h>
 #include "Menu.h"
 #include "variables.h"
 void setup() {
@@ -13,5 +12,8 @@ void setup() {
   initAll();
 }
 void loop() {
+  if(deauthing){
+    deauth();
+  }
   activem->handleInput();
 }

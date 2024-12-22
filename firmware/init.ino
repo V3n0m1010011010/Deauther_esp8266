@@ -8,11 +8,14 @@ void initAll(){
   mainMenu();
   scanMenu();
   selectMenu();
+  attackMenu();
+  deauthMenu();
   mainm->setSubMenu(scanm);
   mainm->setSubMenu(selectm);
   mainm->setSubMenu(attackm);
   scanm->setSubMenu(apScanm);
   scanm->setSubMenu(stScanm);
+  attackm->setSubMenu(deauthm);
   activem = mainm;
   activem->render();
   irrecv.enableIRIn();

@@ -94,9 +94,24 @@ void Menu::setSelectedIndex(int index) {
     selectedIndex = 0;
   }
 }
-void Menu::setlist(std::vector<bool> list){
+void Menu::setlist(std::vector<bool> list) {
   selectedList = list;
 }
-std::vector<bool> Menu::getlist(){
+std::vector<bool> Menu::getlist() {
   return selectedList;
+}
+void Menu::setTitle(std::string t) {
+  title = t;
+}
+std::string Menu::getTitle() {
+  return title;
+}
+void Menu::setSection(std::string t, int i) {
+  sections[i] = t;
+}
+std::string Menu::getSection(int i) {
+  return sections[i];
+}
+void Menu::setScroll(bool scroll) {
+  isScrollable = scroll;
 }

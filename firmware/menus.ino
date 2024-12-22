@@ -99,12 +99,27 @@ void selectMenuAp() {
   if (firstApScan) {
     selectedApList.resize(apList.size(), false);
     for (int i = 0; i < apList.size(); i++) {
-      selectAp->addSection(apList[i].ssid.c_str(), [i]() {
-        selectedApList[i] = !selectedApList[i];
-        for (int j = 0; j < apList.size(); j++) {
-          Serial.println(selectedApList[j]);
-        }
-      });
+      if (selectedApList[i]) {
+        selectAp->addSection(("* " + apList[i].ssid).c_str(), [i]() {
+          selectedApList[i] = !selectedApList[i];
+          if (selectedApList[i]) {
+            activem->setSection("* " + activem->getSection(i + 1), i + 1);
+          } else {
+            activem->setSection(activem->getSection(i + 1).substr(2), i + 1);
+          }
+          activem->render();
+        });
+      } else {
+        selectAp->addSection(apList[i].ssid.c_str(), [i]() {
+          selectedApList[i] = !selectedApList[i];
+          if (selectedApList[i]) {
+            activem->setSection("* " + activem->getSection(i + 1), i + 1);
+          } else {
+            activem->setSection(activem->getSection(i + 1).substr(2), i + 1);
+          }
+          activem->render();
+        });
+      }
     }
   }
   selectm->setSubMenu(selectAp);
@@ -119,11 +134,70 @@ void selectMenuSt() {
     activem->setSelectedIndex(0);
     activem->render();
   });
-  for (int i = 0; i < stList.size(); i++) {
-    selectSt->addSection(((selectedApList[i] ? "*" : " ") + stList[i].ssid).c_str(), [i]() {
-      selectedStList[i] = !selectedStList[i];
+  if (firstApScan) {
+    selectedStList.resize(stList.size(), false);
+    for (int i = 0; i < stList.size(); i++) {
+      if (selectedStList[i]) {
+        selectAp->addSection(("* " + stList[i].ssid).c_str(), [i]() {
+          selectedStList[i] = !selectedStList[i];
+          if (selectedStList[i]) {
+            activem->setSection("* " + activem->getSection(i + 1), i + 1);
+          } else {
+            activem->setSection(activem->getSection(i + 1).substr(2), i + 1);
+          }
+          activem->render();
+        });
+      } else {
+        selectAp->addSection(stList[i].ssid.c_str(), [i]() {
+          selectedStList[i] = !selectedStList[i];
+          if (selectedStList[i]) {
+            activem->setSection("* " + activem->getSection(i + 1), i + 1);
+          } else {
+            activem->setSection(activem->getSection(i + 1).substr(2), i + 1);
+          }
+          activem->render();
+        });
+      }
+    }
+    selectm->setSubMenu(selectSt);
+  }
+}
+
+  //----------------------------------------------------END Select MENUs--------------------------------------------------------------------
+
+
+
+  //----------------------------------------------------START Attack MENUs--------------------------------------------------------------------
+
+  void attackMenu() {
+    attackm = new Menu(3, "Attack Menu", true, c, down, up);
+    attackm->addSection("Back", []() {
+      activem = attackm->getParentMenu();
+      activem->setSelectedIndex(0);
+      activem->render();
+    });
+    attackm->addSection("Deauth", []() {
+      activem = deauthm;
+      activem->setSelectedIndex(0);
+      activem->render();
     });
   }
-  selectm->setSubMenu(selectSt);
-}
-//----------------------------------------------------END Select MENUs--------------------------------------------------------------------
+
+
+  void deauthMenu() {
+    deauthm = new Menu(3.1, "Deauth", true, c, down, up);
+    deauthm->addSection("Back", []() {
+      activem = deauthm->getParentMenu();
+      activem->setSelectedIndex(0);
+      activem->render();
+    });
+    deauthm->addSection("Start", []() {
+      activem->setTitle(!deauthing ? "Deauthing..." : "Deauth");
+      activem->setSection(!deauthing ? "Stop" : "Start", 1);
+      activem->setScroll(!deauthing ? false : true);
+      deauthing = !deauthing;
+      activem->render();
+    });
+  }
+
+  //----------------------------------------------------END Attack MENUs--------------------------------------------------------------------
