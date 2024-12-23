@@ -4,6 +4,7 @@
 #include <IRremoteESP8266.h>
 #include <IRrecv.h>
 #include <IRutils.h>
+#include <algorithm>
 #include <Wire.h>
 #include "Menu.h"
 #include "variables.h"
@@ -14,6 +15,9 @@ void setup() {
 void loop() {
   if(deauthing){
     deauth();
+  }
+  if(monitor){
+    packetMonitor();
   }
   activem->handleInput();
 }

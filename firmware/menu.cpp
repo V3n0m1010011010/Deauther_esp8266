@@ -17,8 +17,8 @@ void Menu::addSection(const std::string& section, std::function<void()> action) 
 }
 
 void Menu::render() {
-  const int maxVisibleItems = 4;
-  const int maxTextWidth = 18;
+  const int maxVisibleItems = 3;
+  const int maxTextWidth = 12;
   static int scrollOffset = 0;
   if (selectedIndex < scrollOffset) {
     scrollOffset = selectedIndex;
@@ -26,23 +26,34 @@ void Menu::render() {
     scrollOffset = selectedIndex - maxVisibleItems + 1;
   }
   dis.clearDisplay();
-  dis.setCursor(2, 2);
+  dis.setTextColor(SH110X_WHITE);
+  dis.drawRoundRect(0, 0, 128, 64, 5, SH110X_WHITE);
+  dis.setCursor(5, 4);
   dis.setTextSize(1.5);
   dis.print(title.c_str());
-  dis.drawLine(0, 13, 128, 13, SH110X_WHITE);
+  dis.drawLine(0, 15, 128, 15, SH110X_WHITE);
   dis.setTextSize(1);
+
+
   for (int i = scrollOffset; i < std::min(scrollOffset + maxVisibleItems, (int)sections.size()); ++i) {
-    int y = 20 + ((i - scrollOffset) * 10);
+    int y = 21 + ((i - scrollOffset) * 14);
+    int16_t x1, y1;
+    uint16_t textWidth, textHeight;
+    dis.getTextBounds(sections[i].substr(0, maxTextWidth).c_str(), 0, 0, &x1, &y1, &textWidth, &textHeight);
+    uint16_t center = (128 - textWidth) / 2;
     if (i == selectedIndex) {
-      dis.drawLine(5, y, 5, y + 5, SH110X_WHITE);
-      dis.setCursor(20, y);
-    } else {
-      dis.setCursor(15, y);
-    }
-    dis.setTextColor(SH110X_WHITE);
-    if (selectedList.size() > 0 && selectedList[i]) {
+      dis.fillRoundRect(10, y - 2, 108, 12, 8, SH110X_WHITE);
+      //dis.drawLine(5, y, 5, y + 5, SH110X_WHITE);
+      dis.setCursor(center, y);
       dis.setTextColor(SH110X_BLACK, SH110X_WHITE);
+    } else {
+      dis.setTextColor(SH110X_WHITE);
+      dis.drawRoundRect(20, y - 2, 88, 12, 8, SH110X_WHITE);
+      dis.setCursor(center, y);
     }
+    /*if (selectedList.size() > 0 && selectedList[i]) {
+      dis.setTextColor(SH110X_BLACK, SH110X_WHITE);
+    }*/
     dis.print(sections[i].substr(0, maxTextWidth).c_str());
   }
   dis.display();

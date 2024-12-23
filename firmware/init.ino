@@ -10,12 +10,18 @@ void initAll(){
   selectMenu();
   attackMenu();
   deauthMenu();
+  snifferMenu();
+  packetMonitorMenu();
   mainm->setSubMenu(scanm);
   mainm->setSubMenu(selectm);
   mainm->setSubMenu(attackm);
+  mainm->setSubMenu(snifferm);
   scanm->setSubMenu(apScanm);
   scanm->setSubMenu(stScanm);
   attackm->setSubMenu(deauthm);
+  snifferm->setSubMenu(packetMonitorm);
+  selectedApList.resize(apList.size(), false);
+  selectedStList.resize(stList.size(), false);
   activem = mainm;
   activem->render();
   irrecv.enableIRIn();

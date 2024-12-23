@@ -81,3 +81,91 @@ void deauth() {
     }
   }
 }
+void sniffer(uint8_t* buf, uint16_t len) {
+  pkts++;
+  if (buf[12] == 0xA0 || buf[12] == 0xC0) {
+    deauths++;
+  }
+}
+void getMultiplicator() {
+  maxVal = 1;
+  for (int i = 0; i < maxRow; i++) {
+    if (val[i] > maxVal) maxVal = val[i];
+  }
+  if (maxVal > LineVal) multiplicator = (double)LineVal / (double)maxVal;
+  else multiplicator = 1;
+}
+void packetMonitor() {
+  curTime = millis();
+  if (!monitor) {
+    wifi_set_opmode(STATION_MODE);
+    wifi_promiscuous_enable(0);
+    WiFi.disconnect();
+    wifi_set_promiscuous_rx_cb(sniffer);
+    wifi_set_channel(curChannel);
+    wifi_promiscuous_enable(1);
+    dis.clearDisplay();
+    dis.setTextColor(SH110X_WHITE);
+    curChannel++;
+    if (curChannel > maxCh) curChannel = 1;
+    wifi_set_channel(curChannel);
+    for (int i = 0; i < maxRow; i++) val[i] = 0;
+    pkts = 0;
+    multiplicator = 1;
+    if (pkts == 0) pkts = deauths;
+    no_deauths = pkts - deauths;
+  }
+  monitor = true;
+
+
+  dis.clearDisplay();
+  dis.drawLine(minRow, Line, maxRow, Line, SH110X_WHITE);
+  dis.setCursor(Row1, LineText);
+  dis.print("Ch:");
+  dis.setCursor(Row3, LineText);
+  dis.print("Pkts:");
+  dis.setCursor(Row5, LineText);
+  dis.print("DA:");
+  dis.setCursor(Row2, LineText);
+  dis.print(curChannel);
+  dis.setCursor(Row4, LineText);
+  dis.print(no_deauths);
+  dis.setCursor(Row6, LineText);
+  dis.print(deauths);
+  for (int i = 0; i < maxRow; i++) {
+    dis.drawLine(i, maxLine, i, maxLine - val[i] * multiplicator, SH110X_WHITE);
+  }
+  dis.display();
+
+  if (curTime - prevTime >= 500) {
+    prevTime = curTime;
+
+    for (int i = 0; i < maxRow; i++) {
+      val[i] = val[i + 1];
+    }
+    val[127] = pkts;
+    getMultiplicator();
+    if (pkts == 0) pkts = deauths;
+    no_deauths = pkts - deauths;
+    dis.clearDisplay();
+    dis.drawLine(minRow, Line, maxRow, Line, SH110X_WHITE);
+    dis.setCursor(Row1, LineText);
+    dis.print("Ch:");
+    dis.setCursor(Row3, LineText);
+    dis.print("Pkts:");
+    dis.setCursor(Row5, LineText);
+    dis.print("DA:");
+    dis.setCursor(Row2, LineText);
+    dis.print(curChannel);
+    dis.setCursor(Row4, LineText);
+    dis.print(no_deauths);
+    dis.setCursor(Row6, LineText);
+    dis.print(deauths);
+    for (int i = 0; i < maxRow; i++) {
+      dis.drawLine(i, maxLine, i, maxLine - val[i] * multiplicator, SH110X_WHITE);
+    }
+    dis.display();
+    deauths = 0;
+    pkts = 0;
+  }
+}

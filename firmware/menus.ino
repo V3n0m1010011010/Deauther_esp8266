@@ -17,6 +17,11 @@ void mainMenu() {
     activem->setSelectedIndex(0);
     activem->render();
   });
+  mainm->addSection("Sniffer", []() {
+    activem = snifferm;
+    activem->setSelectedIndex(0);
+    activem->render();
+  });
 }
 
 //----------------------------------------------------END MAIN MENU--------------------------------------------------------------------
@@ -163,41 +168,72 @@ void selectMenuSt() {
   }
 }
 
-  //----------------------------------------------------END Select MENUs--------------------------------------------------------------------
+//----------------------------------------------------END Select MENUs--------------------------------------------------------------------
 
 
 
-  //----------------------------------------------------START Attack MENUs--------------------------------------------------------------------
+//----------------------------------------------------START Attack MENUs--------------------------------------------------------------------
 
-  void attackMenu() {
-    attackm = new Menu(3, "Attack Menu", true, c, down, up);
-    attackm->addSection("Back", []() {
-      activem = attackm->getParentMenu();
-      activem->setSelectedIndex(0);
-      activem->render();
-    });
-    attackm->addSection("Deauth", []() {
-      activem = deauthm;
-      activem->setSelectedIndex(0);
-      activem->render();
-    });
-  }
+void attackMenu() {
+  attackm = new Menu(3, "Attack Menu", true, c, down, up);
+  attackm->addSection("Back", []() {
+    activem = attackm->getParentMenu();
+    activem->setSelectedIndex(0);
+    activem->render();
+  });
+  attackm->addSection("Deauth", []() {
+    deauthMenu();
+    attackm->setSubMenu(deauthm);
+    activem = deauthm;
+    activem->setSelectedIndex(0);
+    activem->render();
+  });
+}
 
 
-  void deauthMenu() {
-    deauthm = new Menu(3.1, "Deauth", true, c, down, up);
-    deauthm->addSection("Back", []() {
-      activem = deauthm->getParentMenu();
-      activem->setSelectedIndex(0);
-      activem->render();
-    });
-    deauthm->addSection("Start", []() {
-      activem->setTitle(!deauthing ? "Deauthing..." : "Deauth");
-      activem->setSection(!deauthing ? "Stop" : "Start", 1);
-      activem->setScroll(!deauthing ? false : true);
-      deauthing = !deauthing;
-      activem->render();
-    });
-  }
+void deauthMenu() {
+  int allAps = std::count(std::begin(selectedApList), std::end(selectedApList), true);
+  int allSts = std::count(std::begin(selectedStList), std::end(selectedStList), true);
+  deauthm = new Menu(3.1, ("Deauth         " + String(allAps) + "  " + String(allSts)).c_str(), true, c, down, up);
+  deauthm->addSection("Back", []() {
+    activem = deauthm->getParentMenu();
+    activem->setSelectedIndex(0);
+    activem->render();
+  });
+  deauthm->addSection("Start", []() {
+    activem->setTitle(!deauthing ? "Deauthing..." : "Deauth");
+    activem->setSection(!deauthing ? "Stop" : "Start", 1);
+    activem->setScroll(!deauthing ? false : true);
+    deauthing = !deauthing;
+    activem->render();
+  });
+}
 
-  //----------------------------------------------------END Attack MENUs--------------------------------------------------------------------
+//----------------------------------------------------END Attack MENUs--------------------------------------------------------------------
+
+
+//----------------------------------------------------START SNIFFER MENUs--------------------------------------------------------------------
+
+void snifferMenu(){
+  snifferm = new Menu(4, "Sniffers", true, c, down, up);
+  snifferm->addSection("Back", []() {
+    activem = snifferm->getParentMenu();
+    activem->setSelectedIndex(0);
+    activem->render();
+  });
+  snifferm->addSection("Monitor", []() {
+    activem = packetMonitorm;
+    packetMonitor();
+  });
+}
+
+
+void packetMonitorMenu(){
+  packetMonitorm = new Menu(4.1, "", false, c, down, up);
+  packetMonitorm->addSection("", []() {
+    activem = packetMonitorm->getParentMenu();
+    monitor = false;
+    activem->render();
+  });
+}
+//----------------------------------------------------END SNIFFER MENUs--------------------------------------------------------------------
