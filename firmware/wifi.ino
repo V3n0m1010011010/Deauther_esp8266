@@ -1,7 +1,11 @@
 void scanAps() {
   firstApScan = true;
   apList.clear();
+  wifi_promiscuous_enable(0);
+  wifi_set_promiscuous_rx_cb(nullptr);
+  WiFi.mode(WIFI_OFF);
   WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
   int n = WiFi.scanNetworks();
   for (int i = 0; i < n; ++i) {
     String ssid = WiFi.SSID(i);
@@ -25,6 +29,9 @@ void scanAps() {
 }
 void scanSts() {
   stList.clear();
+  wifi_promiscuous_enable(0);
+  wifi_set_promiscuous_rx_cb(nullptr);
+  WiFi.mode(WIFI_OFF);
   WiFi.mode(WIFI_AP_STA);
   int n = WiFi.scanNetworks();
   for (int i = 0; i < n; ++i) {
