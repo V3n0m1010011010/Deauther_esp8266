@@ -7,8 +7,8 @@
 extern Adafruit_SH1106G dis;
 extern decode_results results;
 extern Menu* activem;
-Menu::Menu(double id, const std::string& title, bool isScrollable, int buttonSelectPin, int buttonDownPin, int buttonUpPin)
-  : id(id), title(title), isScrollable(isScrollable), buttonSelectPin(buttonSelectPin), buttonDownPin(buttonDownPin), buttonUpPin(buttonUpPin) {
+Menu::Menu(double id, const std::string& title, bool isScrollable, int buttonSelectPin, int buttonDownPin, int buttonUpPin, std::function<void()> aDown, std::function<void()> aUp)
+  : id(id), title(title), isScrollable(isScrollable), buttonSelectPin(buttonSelectPin), buttonDownPin(buttonDownPin), buttonUpPin(buttonUpPin), aDown(aDown), aUp(aUp) {
 }
 
 void Menu::addSection(const std::string& section, std::function<void()> action) {
@@ -43,7 +43,6 @@ void Menu::render() {
     uint16_t center = (128 - textWidth) / 2;
     if (i == selectedIndex) {
       dis.fillRoundRect(10, y - 2, 108, 12, 8, SH110X_WHITE);
-      //dis.drawLine(5, y, 5, y + 5, SH110X_WHITE);
       dis.setCursor(center, y);
       dis.setTextColor(SH110X_BLACK, SH110X_WHITE);
     } else {
@@ -51,9 +50,6 @@ void Menu::render() {
       dis.drawRoundRect(20, y - 2, 88, 12, 8, SH110X_WHITE);
       dis.setCursor(center, y);
     }
-    /*if (selectedList.size() > 0 && selectedList[i]) {
-      dis.setTextColor(SH110X_BLACK, SH110X_WHITE);
-    }*/
     dis.print(sections[i].substr(0, maxTextWidth).c_str());
   }
   dis.display();
@@ -63,11 +59,19 @@ void Menu::handleInput() {
   if (irrecv.decode(&results)) {
     bool needsRender = false;
     if (results.value == buttonDownPin && isScrollable) {
-      selectedIndex = (selectedIndex + 1) % sections.size();
-      needsRender = true;
+      if (aDown == nullptr) {
+        selectedIndex = (selectedIndex + 1) % sections.size();
+        needsRender = true;
+      } else {
+        aDown();
+      }
     } else if (results.value == buttonUpPin && isScrollable) {
-      selectedIndex = (selectedIndex - 1 + sections.size()) % sections.size();
-      needsRender = true;
+      if (aUp == nullptr) {
+        selectedIndex = (selectedIndex - 1 + sections.size()) % sections.size();
+        needsRender = true;
+      }else{
+        aUp();
+      }
     } else if (results.value == buttonSelectPin) {
       actions[selectedIndex]();
     }

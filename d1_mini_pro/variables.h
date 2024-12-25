@@ -75,7 +75,7 @@ unsigned long curTime = 0;
 unsigned long pkts = 0;
 unsigned long no_deauths = 0;
 unsigned long deauths = 0;
-int curChannel = 0;
+int curChannel = 1;
 unsigned long maxVal = 0;
 double multiplicator = 0.0;
 unsigned int val[128];

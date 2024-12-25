@@ -1,5 +1,5 @@
-#include "logo.h"
-void initAll(){
+#include "icons.h"
+void initAll() {
   Serial.begin(115200);
   dis.begin(i2c_Address);
   wifi_set_opmode(0x01);

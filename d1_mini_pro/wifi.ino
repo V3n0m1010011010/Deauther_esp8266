@@ -113,8 +113,9 @@ void packetMonitor() {
     wifi_promiscuous_enable(1);
     dis.clearDisplay();
     dis.setTextColor(SH110X_WHITE);
-    curChannel++;
+    //curChannel++;
     if (curChannel > maxCh) curChannel = 1;
+    if(curChannel < 1) curChannel = maxCh;
     wifi_set_channel(curChannel);
     for (int i = 0; i < maxRow; i++) val[i] = 0;
     pkts = 0;

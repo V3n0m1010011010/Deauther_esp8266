@@ -219,6 +219,7 @@ void snifferMenu(){
   snifferm->addSection("Back", []() {
     activem = snifferm->getParentMenu();
     activem->setSelectedIndex(0);
+    curChannel = 0;
     activem->render();
   });
   snifferm->addSection("Monitor", []() {
@@ -229,7 +230,7 @@ void snifferMenu(){
 
 
 void packetMonitorMenu(){
-  packetMonitorm = new Menu(4.1, "", false, c, down, up);
+  packetMonitorm = new Menu(4.1, "", true, c, down, up, [](){Serial.println("Test");curChannel--;monitor = false;packetMonitor();}, [](){Serial.println("Test");curChannel++;monitor = false;packetMonitor();});
   packetMonitorm->addSection("", []() {
     activem = packetMonitorm->getParentMenu();
     monitor = false;
