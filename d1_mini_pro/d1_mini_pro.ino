@@ -1,4 +1,6 @@
+// Wifi library for esp8266
 #include <ESP8266WiFi.h>
+//-------------------------
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 #include <IRremoteESP8266.h>
