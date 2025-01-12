@@ -115,7 +115,7 @@ void packetMonitor() {
     dis.setTextColor(SH110X_WHITE);
     //curChannel++;
     if (curChannel > maxCh) curChannel = 1;
-    if(curChannel < 1) curChannel = maxCh;
+    if (curChannel < 1) curChannel = maxCh;
     wifi_set_channel(curChannel);
     for (int i = 0; i < maxRow; i++) val[i] = 0;
     pkts = 0;
@@ -176,4 +176,8 @@ void packetMonitor() {
     deauths = 0;
     pkts = 0;
   }
+}
+
+void Jammer() {
+  for (int i = 0; i < sizeof(hopping_channel); i++) rad.setChannel(hopping_channel[i]);
 }

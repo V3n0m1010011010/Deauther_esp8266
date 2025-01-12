@@ -1,15 +1,27 @@
-#include "icons.h"
 void initAll() {
   Serial.begin(115200);
-  dis.begin(i2c_Address);
+  Wire.begin(4, 5);
+  SPI.begin();
+  // dis.begin(ic2_adress);
+  dis.begin();
   wifi_set_opmode(0x01);
   wifi_set_channel(1);
-  logoShow();
+  if (rad.begin()) {
+    Serial.println("Success");
+    rad.setDataRate(RF24_2MBPS);
+    rad.setPALevel(RF24_PA_MAX, true);
+    rad.stopListening();
+    radInit = true;
+  } else {
+    Serial.println("Fail");
+  }
+  bootDisplay();
   mainMenu();
   scanMenu();
   selectMenu();
   attackMenu();
   deauthMenu();
+  if(radInit)jammerMenu();
   snifferMenu();
   packetMonitorMenu();
   mainm->setSubMenu(scanm);
@@ -19,21 +31,11 @@ void initAll() {
   scanm->setSubMenu(apScanm);
   scanm->setSubMenu(stScanm);
   attackm->setSubMenu(deauthm);
+  if(radInit)attackm->setSubMenu(jammerm);
   snifferm->setSubMenu(packetMonitorm);
   selectedApList.resize(apList.size(), false);
   selectedStList.resize(stList.size(), false);
   activem = mainm;
   activem->render();
   irrecv.enableIRIn();
-}
-void logoShow() {
-  dis.clearDisplay();
-  dis.setTextSize(1);
-  dis.setTextColor(SH110X_WHITE);
-  dis.drawBitmap(128 / 4, 0, logo, 64, 64, 1);
-  dis.display();
-  delay(3000);
-  dis.clearDisplay();
-  dis.setCursor(0, 0);
-  dis.display();
 }

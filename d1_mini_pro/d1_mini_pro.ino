@@ -5,7 +5,10 @@
 #include <IRrecv.h>
 #include <IRutils.h>
 #include <algorithm>
+#include <RF24.h>
+#include <nRF24L01.h>
 #include <Wire.h>
+#include <SPI.h>
 #include "Menu.h"
 #include "variables.h"
 void setup() {
@@ -13,10 +16,13 @@ void setup() {
   initAll();
 }
 void loop() {
-  if(deauthing){
+  if (deauthing) {
     deauth();
   }
-  if(monitor){
+  if (jamming) {
+    Jammer();
+  }
+  if (monitor) {
     packetMonitor();
   }
   activem->handleInput();

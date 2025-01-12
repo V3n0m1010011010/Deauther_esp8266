@@ -188,6 +188,15 @@ void attackMenu() {
     activem->setSelectedIndex(0);
     activem->render();
   });
+  if (radInit) {
+    attackm->addSection("2.4G Jammer", []() {
+      jammerMenu();
+      attackm->setSubMenu(jammerm);
+      activem = jammerm;
+      activem->setSelectedIndex(0);
+      activem->render();
+    });
+  }
 }
 
 
@@ -208,13 +217,37 @@ void deauthMenu() {
     activem->render();
   });
 }
+void jammerMenu() {
+  jammerm = new Menu(3.2, "Jammer", true, c, down, up);
+  jammerm->addSection("Back", []() {
+    activem = jammerm->getParentMenu();
+    activem->setSelectedIndex(0);
+    activem->render();
+  });
+  jammerm->addSection("Start", []() {
+    activem->setTitle(!jamming ? "Jamming..." : "Jammer");
+    activem->setSection(!jamming ? "Stop" : "Start", 1);
+    activem->setScroll(!jamming ? false : true);
+    jamming = !jamming;
+    if (jamming) {
+      rad.startConstCarrier(RF24_PA_MAX, 45);
+    } else {
+      rad.powerDown();
+      rad.powerUp();
+      rad.setDataRate(RF24_2MBPS);
+      rad.setPALevel(RF24_PA_MAX, true);
+      rad.stopListening();
+    }
+    activem->render();
+  });
+}
 
 //----------------------------------------------------END Attack MENUs--------------------------------------------------------------------
 
 
 //----------------------------------------------------START SNIFFER MENUs--------------------------------------------------------------------
 
-void snifferMenu(){
+void snifferMenu() {
   snifferm = new Menu(4, "Sniffers", true, c, down, up);
   snifferm->addSection("Back", []() {
     activem = snifferm->getParentMenu();
@@ -229,8 +262,18 @@ void snifferMenu(){
 }
 
 
-void packetMonitorMenu(){
-  packetMonitorm = new Menu(4.1, "", true, c, down, up, [](){curChannel--;monitor = false;packetMonitor();}, [](){curChannel++;monitor = false;packetMonitor();});
+void packetMonitorMenu() {
+  packetMonitorm = new Menu(
+    4.1, "", true, c, down, up, []() {
+      curChannel--;
+      monitor = false;
+      packetMonitor();
+    },
+    []() {
+      curChannel++;
+      monitor = false;
+      packetMonitor();
+    });
   packetMonitorm->addSection("", []() {
     activem = packetMonitorm->getParentMenu();
     monitor = false;

@@ -1,15 +1,26 @@
 #define down 16754775
 #define up 16736925
-//#define c 16753245
 #define c 16712445
+#define recv 2
+IRrecv irrecv(recv);
+decode_results results;
+
+
+#define ce 16
+#define sck 2
+#define miso 12
+#define mosi 13
+#define csn 15
+RF24 rad(ce, csn, 16000000);
+bool radInit = false;
+byte hopping_channel[] = { 32, 34, 46, 48, 50, 52, 0, 1, 2, 4, 6, 8, 22, 24, 26, 28, 30, 74, 76, 78, 80, 82, 84, 86 };
+
 
 #define i2c_Address 0x3c
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 Adafruit_SH1106G dis = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-IRrecv irrecv(14);
-decode_results results;
 
 
 
@@ -25,8 +36,10 @@ Menu* selectAp;
 Menu* selectSt;
 
 Menu* attackm;
+Menu* jammerm;
 Menu* deauthm;
 bool deauthing = false;
+bool jamming = false;
 
 Menu* snifferm;
 Menu* packetMonitorm;
@@ -49,8 +62,6 @@ std::vector<bool> selectedStList;
 
 
 bool firstApScan = false;
-
-
 
 
 #define minRow 0
